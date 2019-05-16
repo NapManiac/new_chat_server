@@ -20,6 +20,12 @@ public class MsgQueue {
 	} 
 	
 	 public void removeMsgQueue(String username){
-		 msgQueue.remove(username);
+		  for (Map.Entry<String, ChatMessage> entry : msgQueue.entrySet()) {
+			  System.out.println(entry.getKey() + "  username:--->" + username);
+	            if(entry.getKey().equals(username)){
+	            	msgQueue.remove(entry.getKey());
+	            	System.out.println("移出消息组成功");
+	            }
+	        }
 	 }	
 }

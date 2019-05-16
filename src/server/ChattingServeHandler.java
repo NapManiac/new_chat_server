@@ -61,15 +61,26 @@ public class ChattingServeHandler extends ChannelInboundHandlerAdapter{
         }
 //        System.out.println("消息的类型----->" + cmsg.getMessagetype());
         if(cmsg.getMessagetype()==1){//如果是初始化认证消息，则将该用户加入在线用户
-            uc.addOnlineUser(cmsg.getSendUser(),newchannel); // 将该用户添加进在线的用户中
-            System.out.println("在线用户-->" + uc.getOnlineUsers());
-            ChatMessage cmwarning=new ChatMessage("服务器", cmsg.getSendUser(),"欢迎你，"+cmsg.getSendUser() ,2);
-            // 向这个新加入连接的客户端发送一条欢迎信息
-            newchannel.writeAndFlush(cmwarning); 
-            // 遍历消息组，查看是否存在发给该用户的信息
-            if (msgQueue.getChatMessage(cmsg.getSendUser()) != null) {
-            	newchannel.writeAndFlush(msgQueue.getChatMessage(cmsg.getSendUser()));
-            }
+        	if(searchUserExit(cmsg.getSendUser())) {
+        		uc.addOnlineUser(cmsg.getSendUser(),newchannel); // 将该用户添加进在线的用户中
+                System.out.println("在线用户-->" + uc.getOnlineUsers());
+                ChatMessage cmwarning=new ChatMessage("服务器", cmsg.getSendUser(),"欢迎你，"+cmsg.getSendUser() ,2);
+                // 向这个新加入连接的客户端发送一条欢迎信息
+                newchannel.writeAndFlush(cmwarning); 
+                // 遍历消息组，查看是否存在发给该客户端(用户)的信息
+                if (msgQueue.getChatMessage(cmsg.getSendUser()) != null) {
+                	newchannel.writeAndFlush(msgQueue.getChatMessage(cmsg.getSendUser()));
+                	msgQueue.removeMsgQueue(cmsg.getSendUser());
+                	for (Map.Entry<String, ChatMessage> entry : msgQueue.getMsgQueue().entrySet()) {
+    					System.out.println("消息组："+ "key="+entry.getKey()+", Value=" + entry.getValue());
+    				}
+                }
+        	}else {
+        		 ChatMessage cmwarning=new ChatMessage("服务器", cmsg.getSendUser(),"用户名已存在："+cmsg.getSendUser() ,2);
+                 // 向这个加入连接失败的同名客户端发送提示信息
+                 newchannel.writeAndFlush(cmwarning); 
+        	}
+            
         }else if(cmsg.getMessagetype()==2){//如果是聊天消息，则判断发送的对象
             if(cmsg.getReceiveUser().equals("")){// 接收方位空则表示是全体消息，发给所有人
                 for(Channel ch:channels) {
@@ -97,7 +108,17 @@ public class ChattingServeHandler extends ChannelInboundHandlerAdapter{
     }
  
  
-    //服务器监听到客户端活动时
+    private boolean searchUserExit(String username) {
+		// 查找在线用户组中是否存在同名用户
+		for (Map.Entry<String, Channel> user : uc.getOnlineUsers().entrySet()) {
+			if(user.getKey().equals(username)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	//服务器监听到客户端活动时
     @Override // 第二步
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         Channel newchannel=ctx.channel();
