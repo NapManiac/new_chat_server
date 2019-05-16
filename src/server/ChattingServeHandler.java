@@ -1,7 +1,11 @@
 package server;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
 import entity.ChatMessage;
+import entity.MsgQueue;
 import entity.UserChannels;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -14,13 +18,16 @@ public class ChattingServeHandler extends ChannelInboundHandlerAdapter{
 	// 定义一个用于存放已连接服务器的channel组
     public static ChannelGroup channels=new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
     public static UserChannels uc=new UserChannels();
+    // 存放未发送的消息
+    public static MsgQueue msgQueue = new MsgQueue();
     //新客户端进入时，将其加入channel队列
-    @Override
+    @Override  // 第一步
     public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
         Channel newchannel=ctx.channel();
         System.out.println("欢迎新客户端："+newchannel.remoteAddress());
+        // 遍历channels组，通知其它channel对象，有新客户端加入连接
         for(Channel ch:channels){
-            if(ch!=newchannel){ // 判断这个连接服务器的客户端是否曾经连接过
+            if(ch!=newchannel){ 
                 ch.writeAndFlush("欢迎新客户端："+newchannel.remoteAddress());
             }
         }
@@ -44,41 +51,54 @@ public class ChattingServeHandler extends ChannelInboundHandlerAdapter{
     }
  
     //如果有客户端有写数据，则转发给其他人
- 
-    @Override
+    @Override // 第三步
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         Channel newchannel=ctx.channel();
+        // 获得消息
         ChatMessage cmsg=(ChatMessage)msg;
         for (Map.Entry<String, Channel> entry : uc.getOnlineUsers().entrySet()) {
-            System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
+            System.out.println("用户名 = " + entry.getKey() + ", Value = " + entry.getValue());
         }
+//        System.out.println("消息的类型----->" + cmsg.getMessagetype());
         if(cmsg.getMessagetype()==1){//如果是初始化认证消息，则将该用户加入在线用户
-            uc.addOnlineUser(cmsg.getSendUser(),newchannel);
-            System.out.println(uc.getOnlineUsers());
+            uc.addOnlineUser(cmsg.getSendUser(),newchannel); // 将该用户添加进在线的用户中
+            System.out.println("在线用户-->" + uc.getOnlineUsers());
             ChatMessage cmwarning=new ChatMessage("服务器", cmsg.getSendUser(),"欢迎你，"+cmsg.getSendUser() ,2);
-            newchannel.writeAndFlush(cmwarning);
+            // 向这个新加入连接的客户端发送一条欢迎信息
+            newchannel.writeAndFlush(cmwarning); 
+            // 遍历消息组，查看是否存在发给该用户的信息
+            if (msgQueue.getChatMessage(cmsg.getSendUser()) != null) {
+            	newchannel.writeAndFlush(msgQueue.getChatMessage(cmsg.getSendUser()));
+            }
         }else if(cmsg.getMessagetype()==2){//如果是聊天消息，则判断发送的对象
- 
-            if(cmsg.getReceiveUser().equals("")){//发给所有人
+            if(cmsg.getReceiveUser().equals("")){// 接收方位空则表示是全体消息，发给所有人
                 for(Channel ch:channels) {
                     ch.writeAndFlush(cmsg);
                 }
             }else{//发给指定用户
-                System.out.println("666"+uc.getChannel(cmsg.getReceiveUser()).remoteAddress());
-                if(uc.getChannel(cmsg.getReceiveUser())==null){
-                    ChatMessage cmwarning=new ChatMessage("服务器", cmsg.getSendUser(),"该用户不在线！" ,2);
+            	try {
+            		// 这条语句当你发送的用户不在线时会报错,所以在外层用try-catch捕获下异常，进行提示
+            		// 在用户不在线的时候，可以将消息保存在一个消息队列中，当用户上线时在发送过去
+                    System.out.println("666"+uc.getChannel(cmsg.getReceiveUser()).remoteAddress()); 
+                    if(uc.getChannel(cmsg.getReceiveUser())==null){ // 如果在线用户中不存在该用户，则向客户端回复不在线
+                        ChatMessage cmwarning=new ChatMessage("服务器", cmsg.getSendUser(),"该用户不在线！" ,2);
+                        newchannel.writeAndFlush(cmwarning);
+                        msgQueue.addMsg(cmsg.getReceiveUser(), cmsg);
+                    }else{
+                        uc.getChannel(cmsg.getReceiveUser()).writeAndFlush(cmsg);
+                    }
+				} catch (Exception e) { 
+					msgQueue.addMsg(cmsg.getReceiveUser(), cmsg);
+					ChatMessage cmwarning=new ChatMessage("服务器", cmsg.getSendUser(),"该用户不在线！" ,2);
                     newchannel.writeAndFlush(cmwarning);
-                }else{
-                    uc.getChannel(cmsg.getReceiveUser()).writeAndFlush(cmsg);
-                }
- 
+				}
             }
         }
     }
  
  
     //服务器监听到客户端活动时
-    @Override
+    @Override // 第二步
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         Channel newchannel=ctx.channel();
         System.out.println("["+newchannel.remoteAddress()+"]：在线");
@@ -91,7 +111,7 @@ public class ChattingServeHandler extends ChannelInboundHandlerAdapter{
         uc.removeChannel(ctx.channel());
     }
  
-    @Override
+    @Override // 捕获通信过程中产生的异常
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         Channel newchannel=ctx.channel();
         System.out.println("["+newchannel.remoteAddress()+"]：通讯异常");

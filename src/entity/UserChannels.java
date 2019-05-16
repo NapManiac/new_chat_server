@@ -27,6 +27,10 @@ public class UserChannels {
     public void removeOnlineUser(String username){
         onlineUsers.remove(username);
     }
+    /**
+     *  ÒÆ³ýchannelÍ¨µÀ
+     * @param channel
+     */
     public void removeChannel(Channel channel){
         for (Map.Entry<String, Channel> entry : onlineUsers.entrySet()) {
             if(entry.getValue()==channel){
