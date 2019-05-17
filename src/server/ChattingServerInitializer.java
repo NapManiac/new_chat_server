@@ -9,8 +9,8 @@ import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.handler.codec.LengthFieldPrepender;
 
 /**
- * Íê³ÉchannelÖĞpipelineµÄÒ»Ğ©³õÊ¼»¯ÄÚÈİ£¬³õÊ¼»¯Íê³Éºó£¬½«×ÔÉíÒÆ³ı
- * Õâ¸öÀàÏàµ±ÓÚÓÃÀ´ËµÃ÷·şÎñÆ÷Æô¶¯¹ı³ÌÖĞ£¬ĞèÒª¾­¹ıÄÄĞ©¹ı³Ì£¬Ïàµ±ÓÚÁ÷Ë®ÏßÉÏµÄ¼¸¸ö²¿·Ö
+ * å®Œæˆchannelä¸­pipelineçš„ä¸€äº›åˆå§‹åŒ–å†…å®¹ï¼Œåˆå§‹åŒ–å®Œæˆåï¼Œå°†è‡ªèº«ç§»é™¤
+ * è¿™ä¸ªç±»ç›¸å½“äºç”¨æ¥è¯´æ˜æœåŠ¡å™¨å¯åŠ¨è¿‡ç¨‹ä¸­ï¼Œéœ€è¦ç»è¿‡å“ªäº›è¿‡ç¨‹ï¼Œç›¸å½“äºæµæ°´çº¿ä¸Šçš„å‡ ä¸ªéƒ¨åˆ†
  * @author zhuhaipeng
  *
  */
@@ -18,15 +18,15 @@ public class ChattingServerInitializer extends ChannelInitializer<SocketChannel>
     @Override
     protected void initChannel(SocketChannel socketChannel) throws Exception {
         ChannelPipeline pipeline=socketChannel.pipeline();
-        // Õâ¸ö¾ÍÏàµ±ÓÚÊÇÁ÷Ë®ÏßÉÏµÄÒ»¸ö²¿·Ö
-        // pipeline.addLast()Ïàµ±ÓÚÎªÕâ¸öÁ÷Ë®ÏßÌí¼ÓÒ»µÀ¹¤ĞòÖ®ÀàµÄ
+        // è¿™ä¸ªå°±ç›¸å½“äºæ˜¯æµæ°´çº¿ä¸Šçš„ä¸€ä¸ªéƒ¨åˆ†
+        // pipeline.addLast()ç›¸å½“äºä¸ºè¿™ä¸ªæµæ°´çº¿æ·»åŠ ä¸€é“å·¥åºä¹‹ç±»çš„
         pipeline.addLast("frameDecoder", new LengthFieldBasedFrameDecoder(65536, 0, 2, 0, 2));
-        // ½âÂëÆ÷
+        // è§£ç å™¨
         pipeline.addLast("msgpack decoder",new ChatMsgDecoder()); 
         pipeline.addLast("frameEncoder", new LengthFieldPrepender(2));
-        // ±àÂëÆ÷
+        // ç¼–ç å™¨
         pipeline.addLast("msgpack encoder",new ChatMsgEncoder());
-        // ÓëchannelÓĞ¹ØµÄ´¦Àí¶¼ÊÇÔÚChattingServeHandlerÖĞÊµÏÖ
+        // ä¸channelæœ‰å…³çš„å¤„ç†éƒ½æ˜¯åœ¨ChattingServeHandlerä¸­å®ç°
         pipeline.addLast("handler",new ChattingServeHandler());
     }
 }

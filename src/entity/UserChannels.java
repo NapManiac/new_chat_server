@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- *  ÓÃÓÚ½«ÔÚÏßÓÃ»§µÄÓÃ»§ÃûºÍ¶ÔÓ¦µÄÍ¨µÀchannelÏàÆ¥Åä
+ *  ç”¨äºå°†åœ¨çº¿ç”¨æˆ·çš„ç”¨æˆ·åå’Œå¯¹åº”çš„é€šé“channelç›¸åŒ¹é…
  * @author zhuhaipeng
  *
  */
@@ -13,22 +13,22 @@ public class UserChannels {
 
     private Map<String, Channel> onlineUsers=new HashMap<String,Channel>();
     /**
-     *     Ìí¼ÓÔÚÏßµÄÓÃ»§
-     * @param username ÓÃ»§Ãû
-     * @param channel ¸ÃÓÃ»§¶ÔÓ¦µÄchannelÍ¨µÀ
+     *     æ·»åŠ åœ¨çº¿çš„ç”¨æˆ·
+     * @param username ç”¨æˆ·å
+     * @param channel è¯¥ç”¨æˆ·å¯¹åº”çš„channelé€šé“
      */
     public void addOnlineUser(String username,Channel channel){
         onlineUsers.put(username,channel);
     }
     /**
-     * ÒÆ³ıÓÃ»§
-     * @param username ÒªÒÆ³ıµÄÓÃ»§µÄÓÃ»§Ãû
+     * ç§»é™¤ç”¨æˆ·
+     * @param username è¦ç§»é™¤çš„ç”¨æˆ·çš„ç”¨æˆ·å
      */
     public void removeOnlineUser(String username){
         onlineUsers.remove(username);
     }
     /**
-     *  ÒÆ³ıchannelÍ¨µÀ
+     *  ç§»é™¤channelé€šé“
      * @param channel
      */
     public void removeChannel(Channel channel){

@@ -24,7 +24,7 @@ public class MsgQueue {
 			  System.out.println(entry.getKey() + "  username:--->" + username);
 	            if(entry.getKey().equals(username)){
 	            	msgQueue.remove(entry.getKey());
-	            	System.out.println("ÒÆ³öÏûÏ¢×é³É¹¦");
+	            	System.out.println("ç§»å‡ºæ¶ˆæ¯ç»„æˆåŠŸ");
 	            }
 	        }
 	 }	

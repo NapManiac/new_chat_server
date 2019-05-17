@@ -16,7 +16,7 @@ public class ChatMsgDecoder extends MessageToMessageDecoder<ByteBuf> {
         final byte[] array=new byte[length];
         byteBuf.getBytes(byteBuf.readerIndex(),array,0,length);
         ChatMessage msg = new ChatMessage();
-        System.out.println("received array size" +array.length);
+        System.out.println("received array size" +new String(array));
         msg.decode(array);
         list.add(msg);
     }

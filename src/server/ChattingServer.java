@@ -8,41 +8,41 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 
 public class ChattingServer {
-	// ¶Ë¿ÚºÅ
+	// ç«¯å£å·
     private final int port = 8888;
     
     public void startServer() {
-        // µÚÒ»¸öÏß³Ì×é£¬ÓÃÓÚ½ÓÊÕClient¶ËÁ¬½Ó
+        // ç¬¬ä¸€ä¸ªçº¿ç¨‹ç»„ï¼Œç”¨äºæ¥æ”¶Clientç«¯è¿æ¥
         EventLoopGroup bossGroup=new NioEventLoopGroup();
-        // µÚ¶ş¸öÏß³Ì×é£¬ÊÇÓÃÓÚÊµ¼ÊµÄÒµÎñ´¦Àí²Ù×÷µÄ
+        // ç¬¬äºŒä¸ªçº¿ç¨‹ç»„ï¼Œæ˜¯ç”¨äºå®é™…çš„ä¸šåŠ¡å¤„ç†æ“ä½œçš„
         EventLoopGroup workerGroup=new NioEventLoopGroup();
         
         try {
-        	// Ê¹ÓÃNettyÌá¹©µÄServerBootstrapÀ´¶Ô·şÎñÆ÷½øĞĞÅäÖÃ
+        	// ä½¿ç”¨Nettyæä¾›çš„ServerBootstrapæ¥å¯¹æœåŠ¡å™¨è¿›è¡Œé…ç½®
             ServerBootstrap bootstrap=new ServerBootstrap();
-            // Õâ¸öbossGroupÓÃÀ´½ÓÊÜÁ¬½Ó£¬workerGroupÓÃÀ´´¦ÀíÓëÁ¬½ÓÏà¹ØµÄÊÂ¼ş
-            // Ïàµ±ÓÚÀÏ°åºÍÔ±¹¤Ö®¼äµÄ¹ØÏµ
+            // è¿™ä¸ªbossGroupç”¨æ¥æ¥å—è¿æ¥ï¼ŒworkerGroupç”¨æ¥å¤„ç†ä¸è¿æ¥ç›¸å…³çš„äº‹ä»¶
+            // ç›¸å½“äºè€æ¿å’Œå‘˜å·¥ä¹‹é—´çš„å…³ç³»
             bootstrap.group(bossGroup, workerGroup)
-            		// ±íÊ¾·şÎñ¶ËÆô¶¯µÄÊÇNioServerSocketChannelÀàĞÍµÄchannel???
-            		// Ò»¸öchannel´ú±íµÄÓ¦¸Ã¾ÍÊÇÒ»¸öÁ¬½Ó£¬
+            		// è¡¨ç¤ºæœåŠ¡ç«¯å¯åŠ¨çš„æ˜¯NioServerSocketChannelç±»å‹çš„channel???
+            		// ä¸€ä¸ªchannelä»£è¡¨çš„åº”è¯¥å°±æ˜¯ä¸€ä¸ªè¿æ¥ï¼Œ
                     .channel(NioServerSocketChannel.class) 
-                    // BACKLOGÓÃÓÚ¹¹Ôì·şÎñ¶ËÌ×½Ó×ÖServerSocket¶ÔÏó£¬±êÊ¶µ±·şÎñÆ÷ÇëÇó´¦ÀíÏß³ÌÈ«ÂúÊ±£¬
-                    // ÓÃÓÚÁÙÊ±´æ·ÅÒÑÍê³ÉÈı´ÎÎÕÊÖµÄÇëÇóµÄ¶ÓÁĞµÄ×î´ó³¤¶È¡£Èç¹ûÎ´ÉèÖÃ»òËùÉèÖÃµÄÖµĞ¡ÓÚ1 £¬Ä¬ÈÏÖµ50
-                    .option(ChannelOption.SO_BACKLOG, 1024) // ¼´tcpÁĞ¶Ó»º³åÇø
-                    // SO_KEEPALIVE=true,ÊÇÀûÓÃTCPµÄSO_KEEPALIVEÊôĞÔ,
-                	// µ±SO_KEEPALIVE=trueµÄÊ±ºò,·şÎñ¶Ë¿ÉÒÔÌ½²â¿Í»§¶ËµÄÁ¬½ÓÊÇ·ñ»¹´æ»î×Å
+                    // BACKLOGç”¨äºæ„é€ æœåŠ¡ç«¯å¥—æ¥å­—ServerSocketå¯¹è±¡ï¼Œæ ‡è¯†å½“æœåŠ¡å™¨è¯·æ±‚å¤„ç†çº¿ç¨‹å…¨æ»¡æ—¶ï¼Œ
+                    // ç”¨äºä¸´æ—¶å­˜æ”¾å·²å®Œæˆä¸‰æ¬¡æ¡æ‰‹çš„è¯·æ±‚çš„é˜Ÿåˆ—çš„æœ€å¤§é•¿åº¦ã€‚å¦‚æœæœªè®¾ç½®æˆ–æ‰€è®¾ç½®çš„å€¼å°äº1 ï¼Œé»˜è®¤å€¼50
+                    .option(ChannelOption.SO_BACKLOG, 1024) // å³tcpåˆ—é˜Ÿç¼“å†²åŒº
+                    // SO_KEEPALIVE=true,æ˜¯åˆ©ç”¨TCPçš„SO_KEEPALIVEå±æ€§,
+                	// å½“SO_KEEPALIVE=trueçš„æ—¶å€™,æœåŠ¡ç«¯å¯ä»¥æ¢æµ‹å®¢æˆ·ç«¯çš„è¿æ¥æ˜¯å¦è¿˜å­˜æ´»ç€
                     .option(ChannelOption.SO_KEEPALIVE, true)
-                    //°ó¶¨ÊÂ¼ş´¦ÀíÆ÷ChattingServerInitializer£¬ÊµÔòÊÇ°ó¶¨ÆäÖĞµÄChattingServeHandler
+                    //ç»‘å®šäº‹ä»¶å¤„ç†å™¨ChattingServerInitializerï¼Œå®åˆ™æ˜¯ç»‘å®šå…¶ä¸­çš„ChattingServeHandler
                     .childHandler(new ChattingServerInitializer());
-            // ¶Ô¶Ë¿Ú½øĞĞ°ó¶¨²¢ÇÒ¼àÌı
+            // å¯¹ç«¯å£è¿›è¡Œç»‘å®šå¹¶ä¸”ç›‘å¬
             ChannelFuture channelFuture = bootstrap.bind(port).sync();
-            System.out.println("·şÎñÆ÷ÒÑÆô¶¯£¡");
-            // ¼àÌıÁ¬½Ó·şÎñÆ÷µÄchannel×´Ì¬
+            System.out.println("æœåŠ¡å™¨å·²å¯åŠ¨ï¼");
+            // ç›‘å¬è¿æ¥æœåŠ¡å™¨çš„channelçŠ¶æ€
             channelFuture.channel().closeFuture().sync();
         } catch (InterruptedException e) {
             e.printStackTrace();
         } finally {
-        	// ¹Ø±ÕEventLoopGroup£¬ ÊÍ·Å×ÊÔ´
+        	// å…³é—­EventLoopGroupï¼Œ é‡Šæ”¾èµ„æº
             bossGroup.shutdownGracefully();
             workerGroup.shutdownGracefully();
         }

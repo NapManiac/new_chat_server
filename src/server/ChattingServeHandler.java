@@ -15,84 +15,84 @@ import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.util.concurrent.GlobalEventExecutor;
  
 public class ChattingServeHandler extends ChannelInboundHandlerAdapter{
-	// ¶¨ÒåÒ»¸öÓÃÓÚ´æ·ÅÒÑÁ¬½Ó·şÎñÆ÷µÄchannel×é
+	// å®šä¹‰ä¸€ä¸ªç”¨äºå­˜æ”¾å·²è¿æ¥æœåŠ¡å™¨çš„channelç»„
     public static ChannelGroup channels=new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
     public static UserChannels uc=new UserChannels();
-    // ´æ·ÅÎ´·¢ËÍµÄÏûÏ¢
+    // å­˜æ”¾æœªå‘é€çš„æ¶ˆæ¯
     public static MsgQueue msgQueue = new MsgQueue();
-    //ĞÂ¿Í»§¶Ë½øÈëÊ±£¬½«Æä¼ÓÈëchannel¶ÓÁĞ
-    @Override  // µÚÒ»²½
+    //æ–°å®¢æˆ·ç«¯è¿›å…¥æ—¶ï¼Œå°†å…¶åŠ å…¥channelé˜Ÿåˆ—
+    @Override  // ç¬¬ä¸€æ­¥
     public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
         Channel newchannel=ctx.channel();
-        System.out.println("»¶Ó­ĞÂ¿Í»§¶Ë£º"+newchannel.remoteAddress());
-        // ±éÀúchannels×é£¬Í¨ÖªÆäËüchannel¶ÔÏó£¬ÓĞĞÂ¿Í»§¶Ë¼ÓÈëÁ¬½Ó
+        System.out.println("æ¬¢è¿æ–°å®¢æˆ·ç«¯ï¼š"+newchannel.remoteAddress());
+        // éå†channelsç»„ï¼Œé€šçŸ¥å…¶å®ƒchannelå¯¹è±¡ï¼Œæœ‰æ–°å®¢æˆ·ç«¯åŠ å…¥è¿æ¥
         for(Channel ch:channels){
             if(ch!=newchannel){ 
-                ch.writeAndFlush("»¶Ó­ĞÂ¿Í»§¶Ë£º"+newchannel.remoteAddress());
+                ch.writeAndFlush("æ¬¢è¿æ–°å®¢æˆ·ç«¯ï¼š"+newchannel.remoteAddress());
             }
         }
         channels.add(newchannel);
     }
  
-    //ÓĞ¿Í»§¶Ë¶Ï¿ªÁ¬½Óºó£¬½«ÆäÒÆ³ö¶ÓÁĞ
+    //æœ‰å®¢æˆ·ç«¯æ–­å¼€è¿æ¥åï¼Œå°†å…¶ç§»å‡ºé˜Ÿåˆ—
     @Override
     public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
-    	// µÃµ½Ò»¸öchannel¶ÔÏó
+    	// å¾—åˆ°ä¸€ä¸ªchannelå¯¹è±¡
         Channel newchannel =ctx.channel();
-        // ±éÀúchannels×é£¬Í¨ÖªÆäËüchannel¶ÔÏó£¬¸Ãchannel¶ÔÏóÒÑ¾­ÍË³öÁ¬½Ó
+        // éå†channelsç»„ï¼Œé€šçŸ¥å…¶å®ƒchannelå¯¹è±¡ï¼Œè¯¥channelå¯¹è±¡å·²ç»é€€å‡ºè¿æ¥
         for(Channel ch:channels) {
             if (ch != newchannel) {
-                ch.writeAndFlush(newchannel.remoteAddress() + "ÍË³öÁÄÌìÊÒ");
+                ch.writeAndFlush(newchannel.remoteAddress() + "é€€å‡ºèŠå¤©å®¤");
             }
         }
-        // ½«¸Ãchannel¶ÔÏóÒÆ³ö×é
+        // å°†è¯¥channelå¯¹è±¡ç§»å‡ºç»„
         channels.remove(newchannel);
  
     }
  
-    //Èç¹ûÓĞ¿Í»§¶ËÓĞĞ´Êı¾İ£¬Ôò×ª·¢¸øÆäËûÈË
-    @Override // µÚÈı²½
+    //å¦‚æœæœ‰å®¢æˆ·ç«¯æœ‰å†™æ•°æ®ï¼Œåˆ™è½¬å‘ç»™å…¶ä»–äºº
+    @Override // ç¬¬ä¸‰æ­¥
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         Channel newchannel=ctx.channel();
-        // »ñµÃÏûÏ¢
+        // è·å¾—æ¶ˆæ¯
         ChatMessage cmsg=(ChatMessage)msg;
         for (Map.Entry<String, Channel> entry : uc.getOnlineUsers().entrySet()) {
-            System.out.println("ÓÃ»§Ãû = " + entry.getKey() + ", Value = " + entry.getValue());
+            System.out.println("ç”¨æˆ·å = " + entry.getKey() + ", Value = " + entry.getValue());
         }
-//        System.out.println("ÏûÏ¢µÄÀàĞÍ----->" + cmsg.getMessagetype());
-        if(cmsg.getMessagetype()==1){//Èç¹ûÊÇ³õÊ¼»¯ÈÏÖ¤ÏûÏ¢£¬Ôò½«¸ÃÓÃ»§¼ÓÈëÔÚÏßÓÃ»§
+//        System.out.println("æ¶ˆæ¯çš„ç±»å‹----->" + cmsg.getMessagetype());
+        if(cmsg.getMessagetype()==1){//å¦‚æœæ˜¯åˆå§‹åŒ–è®¤è¯æ¶ˆæ¯ï¼Œåˆ™å°†è¯¥ç”¨æˆ·åŠ å…¥åœ¨çº¿ç”¨æˆ·
         	if(searchUserExit(cmsg.getSendUser())) {
-        		uc.addOnlineUser(cmsg.getSendUser(),newchannel); // ½«¸ÃÓÃ»§Ìí¼Ó½øÔÚÏßµÄÓÃ»§ÖĞ
-                System.out.println("ÔÚÏßÓÃ»§-->" + uc.getOnlineUsers());
-                ChatMessage cmwarning=new ChatMessage("·şÎñÆ÷", cmsg.getSendUser(),"»¶Ó­Äã£¬"+cmsg.getSendUser() ,2);
-                // ÏòÕâ¸öĞÂ¼ÓÈëÁ¬½ÓµÄ¿Í»§¶Ë·¢ËÍÒ»Ìõ»¶Ó­ĞÅÏ¢
+        		uc.addOnlineUser(cmsg.getSendUser(),newchannel); // å°†è¯¥ç”¨æˆ·æ·»åŠ è¿›åœ¨çº¿çš„ç”¨æˆ·ä¸­
+                System.out.println("åœ¨çº¿ç”¨æˆ·-->" + uc.getOnlineUsers());
+                ChatMessage cmwarning=new ChatMessage("server", cmsg.getSendUser(),"welcomeï¼Œ"+cmsg.getSendUser() ,2);
+                // å‘è¿™ä¸ªæ–°åŠ å…¥è¿æ¥çš„å®¢æˆ·ç«¯å‘é€ä¸€æ¡æ¬¢è¿ä¿¡æ¯
                 newchannel.writeAndFlush(cmwarning); 
-                // ±éÀúÏûÏ¢×é£¬²é¿´ÊÇ·ñ´æÔÚ·¢¸ø¸Ã¿Í»§¶Ë(ÓÃ»§)µÄĞÅÏ¢
+                // éå†æ¶ˆæ¯ç»„ï¼ŒæŸ¥çœ‹æ˜¯å¦å­˜åœ¨å‘ç»™è¯¥å®¢æˆ·ç«¯(ç”¨æˆ·)çš„ä¿¡æ¯
                 if (msgQueue.getChatMessage(cmsg.getSendUser()) != null) {
                 	newchannel.writeAndFlush(msgQueue.getChatMessage(cmsg.getSendUser()));
                 	msgQueue.removeMsgQueue(cmsg.getSendUser());
                 	for (Map.Entry<String, ChatMessage> entry : msgQueue.getMsgQueue().entrySet()) {
-    					System.out.println("ÏûÏ¢×é£º"+ "key="+entry.getKey()+", Value=" + entry.getValue());
+    					System.out.println("æ¶ˆæ¯ç»„ï¼š"+ "key="+entry.getKey()+", Value=" + entry.getValue());
     				}
                 }
         	}else {
-        		 ChatMessage cmwarning=new ChatMessage("·şÎñÆ÷", cmsg.getSendUser(),"ÓÃ»§ÃûÒÑ´æÔÚ£º"+cmsg.getSendUser() ,2);
-                 // ÏòÕâ¸ö¼ÓÈëÁ¬½ÓÊ§°ÜµÄÍ¬Ãû¿Í»§¶Ë·¢ËÍÌáÊ¾ĞÅÏ¢
+        		 ChatMessage cmwarning=new ChatMessage("server", cmsg.getSendUser(),"user name existsï¼š"+cmsg.getSendUser() ,2);
+                 // å‘è¿™ä¸ªåŠ å…¥è¿æ¥å¤±è´¥çš„åŒåå®¢æˆ·ç«¯å‘é€æç¤ºä¿¡æ¯
                  newchannel.writeAndFlush(cmwarning); 
         	}
             
-        }else if(cmsg.getMessagetype()==2){//Èç¹ûÊÇÁÄÌìÏûÏ¢£¬ÔòÅĞ¶Ï·¢ËÍµÄ¶ÔÏó
-            if(cmsg.getReceiveUser().equals("")){// ½ÓÊÕ·½Î»¿ÕÔò±íÊ¾ÊÇÈ«ÌåÏûÏ¢£¬·¢¸øËùÓĞÈË
+        }else if(cmsg.getMessagetype()==2){//å¦‚æœæ˜¯èŠå¤©æ¶ˆæ¯ï¼Œåˆ™åˆ¤æ–­å‘é€çš„å¯¹è±¡
+            if(cmsg.getReceiveUser().equals("")){// æ¥æ”¶æ–¹ä½ç©ºåˆ™è¡¨ç¤ºæ˜¯å…¨ä½“æ¶ˆæ¯ï¼Œå‘ç»™æ‰€æœ‰äºº
                 for(Channel ch:channels) {
                     ch.writeAndFlush(cmsg);
                 }
-            }else{//·¢¸øÖ¸¶¨ÓÃ»§
+            }else{//å‘ç»™æŒ‡å®šç”¨æˆ·
             	try {
-            		// ÕâÌõÓï¾äµ±Äã·¢ËÍµÄÓÃ»§²»ÔÚÏßÊ±»á±¨´í,ËùÒÔÔÚÍâ²ãÓÃtry-catch²¶»ñÏÂÒì³££¬½øĞĞÌáÊ¾
-            		// ÔÚÓÃ»§²»ÔÚÏßµÄÊ±ºò£¬¿ÉÒÔ½«ÏûÏ¢±£´æÔÚÒ»¸öÏûÏ¢¶ÓÁĞÖĞ£¬µ±ÓÃ»§ÉÏÏßÊ±ÔÚ·¢ËÍ¹ıÈ¥
+            		// è¿™æ¡è¯­å¥å½“ä½ å‘é€çš„ç”¨æˆ·ä¸åœ¨çº¿æ—¶ä¼šæŠ¥é”™,æ‰€ä»¥åœ¨å¤–å±‚ç”¨try-catchæ•è·ä¸‹å¼‚å¸¸ï¼Œè¿›è¡Œæç¤º
+            		// åœ¨ç”¨æˆ·ä¸åœ¨çº¿çš„æ—¶å€™ï¼Œå¯ä»¥å°†æ¶ˆæ¯ä¿å­˜åœ¨ä¸€ä¸ªæ¶ˆæ¯é˜Ÿåˆ—ä¸­ï¼Œå½“ç”¨æˆ·ä¸Šçº¿æ—¶åœ¨å‘é€è¿‡å»
                     System.out.println("666"+uc.getChannel(cmsg.getReceiveUser()).remoteAddress()); 
-                    if(uc.getChannel(cmsg.getReceiveUser())==null){ // Èç¹ûÔÚÏßÓÃ»§ÖĞ²»´æÔÚ¸ÃÓÃ»§£¬ÔòÏò¿Í»§¶Ë»Ø¸´²»ÔÚÏß
-                        ChatMessage cmwarning=new ChatMessage("·şÎñÆ÷", cmsg.getSendUser(),"¸ÃÓÃ»§²»ÔÚÏß£¡" ,2);
+                    if(uc.getChannel(cmsg.getReceiveUser())==null){ // å¦‚æœåœ¨çº¿ç”¨æˆ·ä¸­ä¸å­˜åœ¨è¯¥ç”¨æˆ·ï¼Œåˆ™å‘å®¢æˆ·ç«¯å›å¤ä¸åœ¨çº¿
+                        ChatMessage cmwarning=new ChatMessage("server", cmsg.getSendUser(),"user not onlineï¼" ,2);
                         newchannel.writeAndFlush(cmwarning);
                         msgQueue.addMsg(cmsg.getReceiveUser(), cmsg);
                     }else{
@@ -100,7 +100,7 @@ public class ChattingServeHandler extends ChannelInboundHandlerAdapter{
                     }
 				} catch (Exception e) { 
 					msgQueue.addMsg(cmsg.getReceiveUser(), cmsg);
-					ChatMessage cmwarning=new ChatMessage("·şÎñÆ÷", cmsg.getSendUser(),"¸ÃÓÃ»§²»ÔÚÏß£¡" ,2);
+					ChatMessage cmwarning=new ChatMessage("server", cmsg.getSendUser(),"user not onlineï¼" ,2);
                     newchannel.writeAndFlush(cmwarning);
 				}
             }
@@ -109,7 +109,7 @@ public class ChattingServeHandler extends ChannelInboundHandlerAdapter{
  
  
     private boolean searchUserExit(String username) {
-		// ²éÕÒÔÚÏßÓÃ»§×éÖĞÊÇ·ñ´æÔÚÍ¬ÃûÓÃ»§
+		// æŸ¥æ‰¾åœ¨çº¿ç”¨æˆ·ç»„ä¸­æ˜¯å¦å­˜åœ¨åŒåç”¨æˆ·
 		for (Map.Entry<String, Channel> user : uc.getOnlineUsers().entrySet()) {
 			if(user.getKey().equals(username)) {
 				return false;
@@ -118,24 +118,24 @@ public class ChattingServeHandler extends ChannelInboundHandlerAdapter{
 		return true;
 	}
 
-	//·şÎñÆ÷¼àÌıµ½¿Í»§¶Ë»î¶¯Ê±
-    @Override // µÚ¶ş²½
+	//æœåŠ¡å™¨ç›‘å¬åˆ°å®¢æˆ·ç«¯æ´»åŠ¨æ—¶
+    @Override // ç¬¬äºŒæ­¥
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         Channel newchannel=ctx.channel();
-        System.out.println("["+newchannel.remoteAddress()+"]£ºÔÚÏß");
+        System.out.println("["+newchannel.remoteAddress()+"]ï¼šåœ¨çº¿");
     }
  
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         Channel newchannel=ctx.channel();
-        System.out.println("["+newchannel.remoteAddress()+"]£ºÀëÏßÁË");
+        System.out.println("["+newchannel.remoteAddress()+"]ï¼šç¦»çº¿äº†");
         uc.removeChannel(ctx.channel());
     }
  
-    @Override // ²¶»ñÍ¨ĞÅ¹ı³ÌÖĞ²úÉúµÄÒì³£
+    @Override // æ•è·é€šä¿¡è¿‡ç¨‹ä¸­äº§ç”Ÿçš„å¼‚å¸¸
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         Channel newchannel=ctx.channel();
-        System.out.println("["+newchannel.remoteAddress()+"]£ºÍ¨Ñ¶Òì³£");
+        System.out.println("["+newchannel.remoteAddress()+"]ï¼šé€šè®¯å¼‚å¸¸");
         System.out.println(cause.getMessage());
         newchannel.close();
     }
