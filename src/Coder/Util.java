@@ -17,7 +17,7 @@ public class Util {
 		num += ((int)(data[offset+1]) << 8);
 		num += ((int)(data[offset+2]) << 16);
 		num += ((int)(data[offset+3]) << 24);
-		
+
 		return num;
 	}
 }

@@ -1,17 +1,52 @@
 package entity;
 
 import io.netty.channel.Channel;
+
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
  *  用于将在线用户的用户名和对应的通道channel相匹配
- * @author zhuhaipeng
  *
  */
 public class UserChannels {
 
+    private Map<String, ArrayList<String>>  userFriends = new HashMap<>();
+
     private Map<String, Channel> onlineUsers=new HashMap<String,Channel>();
+
+    public Map<String, ArrayList<String>> getUserFriends() {
+        return userFriends;
+    }
+
+    public void setUserFriends(Map<String, ArrayList<String>> userFriends) {
+        this.userFriends = userFriends;
+    }
+
+    public void addUserFriend(String userName, String friendName) {
+        if (userFriends.containsKey(userName)) {
+            List<String> temp = userFriends.get(userName);
+            temp.add(friendName);
+        } else {
+            ArrayList<String> temp = new ArrayList<>();
+            temp.add(friendName);
+            userFriends.put(userName, temp);
+        }
+    }
+
+    public boolean searchUserFriend(String userName, String friendName) {
+        for (Map.Entry<String, ArrayList<String>> entry : userFriends.entrySet()) {
+            if (entry.getKey().equals(userName)) {
+                List<String> temp = entry.getValue();
+                if (temp.indexOf(friendName) != -1) {
+                  return true;
+                }
+            }
+        }
+        return false;
+    }
     /**
      *     添加在线的用户
      * @param username 用户名

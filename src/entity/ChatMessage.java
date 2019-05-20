@@ -16,7 +16,7 @@ public class ChatMessage {
    
     private String message;
     
-    private int messagetype;//1:初始化认证消息，2：聊天消息
+    private Integer messagetype;//1:初始化认证消息，2：聊天消息
 
     public ChatMessage() { // 空参构造
     }
@@ -28,8 +28,8 @@ public class ChatMessage {
         this.messagetype=messagetype;
     }
 
-    public byte[] encode() throws UnsupportedEncodingException {
-        int totalLength = sendUser.getBytes("UTF-8").length + receiveUser.getBytes("UTF-8").length + message.getBytes("UTF-8").length + 4 + 3;
+    public byte[] encode2() throws UnsupportedEncodingException {
+        int totalLength = sendUser.getBytes("UTF-8").length + receiveUser.getBytes("UTF-8").length + message.getBytes("UTF-8").length + 3 + 4;
         byte[] buffer = new byte[totalLength];
         int offset = 0;
 
@@ -52,15 +52,55 @@ public class ChatMessage {
 
         // copy sign to buffer
         buffer[offset++] = ':';
-
         byte[] messageTypeBuffer = Util.int2bytes(messagetype);
+        int temp = Util.bytes2int(messageTypeBuffer, 0);
+
+        System.out.println("type " + messageTypeBuffer.length + " totalLen " + totalLength + " off " + offset + " temp " + temp);
         System.arraycopy(messageTypeBuffer, 0, buffer, offset, 4);
-        
-        System.out.println(new String(buffer, "UTF-8"));
+
+        System.out.println(new String(buffer));
         return buffer;
     }
 
-    public void decode(byte[] buffer) throws UnsupportedEncodingException {
+    public byte[] encode() throws UnsupportedEncodingException {
+        int lenSendUesr = sendUser.getBytes().length;
+        int lenReceiveUser = receiveUser.getBytes().length;
+        int lenMsg = message.getBytes().length;
+        int totalLength = lenMsg + lenReceiveUser + lenSendUesr + 4 * 4;
+
+        byte[] buffer = new byte[totalLength];
+        int offset = 0;
+
+        byte[] messageTypeBuffer;
+        messageTypeBuffer = Util.int2bytes(messagetype);
+        System.arraycopy(messageTypeBuffer, 0, buffer, offset, 4);
+        offset += 4;
+
+        messageTypeBuffer = Util.int2bytes(lenSendUesr);
+        System.arraycopy(messageTypeBuffer, 0, buffer, offset, 4);
+        offset += 4;
+
+        messageTypeBuffer = Util.int2bytes(lenReceiveUser);
+        System.arraycopy(messageTypeBuffer, 0, buffer, offset, 4);
+        offset += 4;
+
+        messageTypeBuffer = Util.int2bytes(lenMsg);
+        System.arraycopy(messageTypeBuffer, 0, buffer, offset, 4);
+        offset += 4;
+
+        System.arraycopy(sendUser.getBytes("UTF-8"), 0, buffer, offset, sendUser.getBytes("UTF-8").length);
+        offset += sendUser.getBytes("UTF-8").length;
+
+        System.arraycopy(receiveUser.getBytes("UTF-8"), 0, buffer, offset, receiveUser.getBytes("UTF-8").length);
+        offset += receiveUser.getBytes("UTF-8").length;
+
+        System.arraycopy(message.getBytes("UTF-8"), 0, buffer, offset, message.getBytes("UTF-8").length);
+        offset += message.getBytes("UTF-8").length;
+
+        return buffer;
+    }
+
+    public void decode2(byte[] buffer) throws UnsupportedEncodingException {
         int start_pos = 0;
         int end_pos = 0;
         // decode send user
@@ -94,6 +134,31 @@ public class ChatMessage {
 
         start_pos = end_pos + 1;
         messagetype = Util.bytes2int(buffer, start_pos);
+
+    }
+
+    public void decode(byte[] buffer) throws UnsupportedEncodingException {
+        int offeset = 0;
+        messagetype = Util.bytes2int(buffer, offeset);
+        offeset += 4;
+
+        int lenSendUesr = Util.bytes2int(buffer, offeset);
+        offeset += 4;
+
+        int lenReceiveUser = Util.bytes2int(buffer, offeset);
+        offeset += 4;
+
+        int lenMsg = Util.bytes2int(buffer, offeset);
+        offeset += 4;
+        System.out.println("类型：" + messagetype + " 发送人：" + lenSendUesr + " 接收者：" + lenReceiveUser + " 消息：" + lenMsg);
+
+        sendUser = new String(buffer, offeset, lenSendUesr, "UTF-8");
+        offeset += lenSendUesr;
+
+        receiveUser = new String(buffer, offeset, lenReceiveUser, "UTF-8");
+        offeset += lenReceiveUser;
+
+        message = new String(buffer, offeset, lenMsg, "UTF-8");
 
     }
 

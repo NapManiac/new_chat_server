@@ -3,7 +3,6 @@ package entity;
 import java.util.HashMap;
 import java.util.Map;
 
-import io.netty.channel.Channel;
 
 public class MsgQueue {
 	 private Map<String, ChatMessage> msgQueue=new HashMap<String,ChatMessage>();
