@@ -17,14 +17,6 @@ public class UserChannels {
 
     private Map<String, Channel> onlineUsers=new HashMap<String,Channel>();
 
-    public Map<String, ArrayList<String>> getUserFriends() {
-        return userFriends;
-    }
-
-    public void setUserFriends(Map<String, ArrayList<String>> userFriends) {
-        this.userFriends = userFriends;
-    }
-
     public void addUserFriend(String userName, String friendName) {
         if (userFriends.containsKey(userName)) {
             List<String> temp = userFriends.get(userName);
@@ -76,6 +68,9 @@ public class UserChannels {
     public Channel getChannel(String username){
         return onlineUsers.get(username);
     }
+
+
+
     public Map<String, Channel> getOnlineUsers() {
         return onlineUsers;
     }

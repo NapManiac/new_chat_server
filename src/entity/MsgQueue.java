@@ -5,21 +5,21 @@ import java.util.Map;
 
 
 public class MsgQueue {
-	 private Map<String, ChatMessage> msgQueue=new HashMap<String,ChatMessage>();
-	 public void addMsg(String userName, ChatMessage chatMessage) {
-		 msgQueue.put(userName, chatMessage);
+	 private Map<String, Packet> msgQueue=new HashMap<String,Packet>();
+	 public void addMsg(String userName, Packet packet) {
+		 msgQueue.put(userName, packet);
 	 }
 	 
-	 public ChatMessage getChatMessage(String username){
+	 public Packet getChatMessage(String username){
 	        return msgQueue.get(username);
 	 }
 	 
-	public Map<String, ChatMessage> getMsgQueue() {
+	public Map<String, Packet> getMsgQueue() {
 	    return msgQueue;
 	} 
 	
 	 public void removeMsgQueue(String username){
-		  for (Map.Entry<String, ChatMessage> entry : msgQueue.entrySet()) {
+		  for (Map.Entry<String, Packet> entry : msgQueue.entrySet()) {
 			  System.out.println(entry.getKey() + "  username:--->" + username);
 	            if(entry.getKey().equals(username)){
 	            	msgQueue.remove(entry.getKey());

@@ -2,6 +2,10 @@ package Coder;
 
 public class Util {
 
+	public static int MSG_INIT = 0;
+	public static int MSG_CHAT = 1;
+	public static int MSG_ADDFRIENDS = 2;
+
 	public static byte[] int2bytes(int num) {
 		byte[] data = new byte[4];
 		data[0] = (byte)(num & 0xFF);
