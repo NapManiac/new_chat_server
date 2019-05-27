@@ -50,7 +50,7 @@ public class ChattingServeHandler extends ChannelInboundHandlerAdapter{
         Packet packet = (Packet) msg;
         packet.setCtx(ctx);
         System.out.println("type:" + packet.getClass());
-        packet.process();
+        TaskQueue.INSTANCE.push(packet);
 
     }
     public static boolean searchUserExit(String username) {
