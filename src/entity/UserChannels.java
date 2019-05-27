@@ -13,7 +13,7 @@ import java.util.Map;
  */
 public class UserChannels {
 
-    private Map<String, ArrayList<String>>  userFriends = new HashMap<>();
+    private Map<String, ArrayList<String>>  userFriends = new HashMap<String, ArrayList<String>>();
 
     private Map<String, Channel> onlineUsers=new HashMap<String,Channel>();
 
@@ -22,7 +22,7 @@ public class UserChannels {
             List<String> temp = userFriends.get(userName);
             temp.add(friendName);
         } else {
-            ArrayList<String> temp = new ArrayList<>();
+            ArrayList<String> temp = new ArrayList<String>();
             temp.add(friendName);
             userFriends.put(userName, temp);
         }
