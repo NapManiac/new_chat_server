@@ -5,8 +5,8 @@ public class StartServer {
         for (int i = 0; i < 10; i++) {
             new Thread(new WorkThread()).start();
         }
-
         ChattingServer cs= new ChattingServer();
         cs.startServer();
+
     }
 }

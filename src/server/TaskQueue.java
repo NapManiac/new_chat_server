@@ -25,17 +25,17 @@ public class TaskQueue {
 	}
 	
 	public Packet pop() throws InterruptedException {
-		
+
 			lock.lock();
 			while (tasks.size() == 0) {
 				condition.await();
 			}
-			
+
 			Packet packet = tasks.get(0);
 			tasks.remove(0);
 			lock.unlock();
 			return packet;
-		
-		
+
+
 	}
 }

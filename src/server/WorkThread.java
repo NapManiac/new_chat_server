@@ -1,7 +1,6 @@
 package server;
 
 import entity.Packet;
-import entity.TaskQueue;
 
 public class WorkThread implements Runnable{
 
@@ -12,7 +11,7 @@ public class WorkThread implements Runnable{
             try {
                 packet = TaskQueue.INSTANCE.pop();
                 packet.process();
-                Thread.sleep(10);
+                Thread.sleep(100);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
