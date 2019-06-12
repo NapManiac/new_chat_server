@@ -35,7 +35,5 @@ public class TaskQueue {
 			tasks.remove(0);
 			lock.unlock();
 			return packet;
-
-
 	}
 }

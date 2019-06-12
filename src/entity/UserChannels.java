@@ -13,14 +13,46 @@ import java.util.Map;
  */
 public class UserChannels {
 
-    private Map<String, ArrayList<String>>  userFriends = new HashMap<String, ArrayList<String>>();
+    public static Map<String, ArrayList<String>>  userFriends = new HashMap<>();
 
-    private Map<String, Channel> onlineUsers=new HashMap<String,Channel>();
+    private Map<String, Channel> onlineUsers = new HashMap();
 
-    public void addUserFriend(String userName, String friendName) {
+    private static Map<String, String> account = new HashMap<>();
+
+    public static Map<String, Contacts> userInfo = new HashMap<>();
+
+    public static Map<String, ArrayList<String>> userReuest = new HashMap<>();
+
+
+
+    public static boolean searchId(String id) {
+        if (account.containsKey(id)) {
+            return true;
+        }
+        return false;
+    }
+
+    public static void addAccount(String id, String password) {
+        account.put(id, password);
+        userFriends.put(id, new ArrayList<>());
+        userReuest.put(id, new ArrayList<>());
+        userInfo.put(id, new Contacts());
+    }
+
+    public static boolean searchPassword(String id, String password) {
+        if (account.get(id).equals(password)) {
+            return true;
+        }
+        return false;
+    }
+
+    public static void addUserFriend(String userName, String friendName) {
         if (userFriends.containsKey(userName)) {
             List<String> temp = userFriends.get(userName);
-            temp.add(friendName);
+            if (!temp.contains(friendName)) {
+
+                temp.add(friendName);
+            }
         } else {
             ArrayList<String> temp = new ArrayList<String>();
             temp.add(friendName);
@@ -28,7 +60,7 @@ public class UserChannels {
         }
     }
 
-    public boolean searchUserFriend(String userName, String friendName) {
+    public static boolean searchUserFriend(String userName, String friendName) {
         for (Map.Entry<String, ArrayList<String>> entry : userFriends.entrySet()) {
             if (entry.getKey().equals(userName)) {
                 List<String> temp = entry.getValue();

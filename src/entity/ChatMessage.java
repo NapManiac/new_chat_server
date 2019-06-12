@@ -48,7 +48,6 @@ public class ChatMessage extends Packet{
     @Override
     public void process() {
         System.out.println("进入chat process");
-        Channel newChannel =  getCtx().channel();
         UserChannels uc = ChattingServeHandler.uc;
         if(getReceiveUser().equals("")){// 接收方位空则表示是全体消息，发给所有朋友
             for(Channel ch : ChattingServeHandler.channels) {
@@ -57,13 +56,8 @@ public class ChatMessage extends Packet{
         }else{//发给指定用户
 
             if(uc.getChannel(getReceiveUser())==null){ // 如果在线用户中不存在该用户，则向客户端回复不在线
-                ChatMessage cmwarning=new ChatMessage("server", getSendUser(),"对方不在线！" );
 
-                newChannel.writeAndFlush(cmwarning);
                 msgQueue.addMsg(getReceiveUser(), this);
-            } else if(!uc.searchUserFriend(getSendUser(), getReceiveUser())) {
-                ChatMessage cmwarning=new ChatMessage("server", getSendUser(),"对方不是你的好友，请先添加对方为好友！" );
-                newChannel.writeAndFlush(cmwarning);
             } else {
                 uc.getChannel(getReceiveUser()).writeAndFlush(this);
             }

@@ -1,14 +1,12 @@
 package entity;
 
-
 import Coder.Util;
-import server.ChattingServeHandler;
-
-import java.io.UnsupportedEncodingException;
-
 import io.netty.channel.Channel;
 
-public class InitMessage extends Packet {
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+
+public class RegisterMessage extends Packet{
 
     private String message;
 
@@ -20,29 +18,21 @@ public class InitMessage extends Packet {
         return message;
     }
 
-    public InitMessage() { // 空参构造
+    public RegisterMessage() { // 空参构造
         setPacketType(Util.MSG_INIT);
     }
 
-    public InitMessage(String sendUser, String receiveUser, String message){
-        super(Util.MSG_INIT, sendUser, receiveUser);
+    public RegisterMessage(String sendUser, String receiveUser, String message){
+        super(Util.MSG_REGISTER, sendUser, receiveUser);
         this.message = message;
-
     }
-
-    public InitMessage(String sendUser, String receiveUser, String id, String password){
-        super(Util.MSG_INIT, sendUser, receiveUser);
-        this.id = id;
-        this.password = password;
-    }
-
-
     @Override
     public byte[] encode() throws UnsupportedEncodingException {
         byte[] superEncode = super.encodeInit();
         int superMsg = superEncode.length;
         int lenMsg = message.getBytes().length;
         byte[] buffer = new byte[lenMsg + superMsg];
+
         System.arraycopy(superEncode, 0, buffer, 0, superEncode.length);
         System.arraycopy(message.getBytes(), 0, buffer, superMsg, message.getBytes("UTF-8").length);
         return buffer;
@@ -64,28 +54,20 @@ public class InitMessage extends Packet {
     }
     @Override
     public void process() {
-        System.out.println("进入init process");
         Channel newChannel =  getCtx().channel();
 
+        //查找id是否被注册
         if (UserChannels.searchId(id)) {
-            if (UserChannels.searchPassword(id, password)) {
-                UserChannels uc = ChattingServeHandler.uc;
-                uc.addOnlineUser(getSendUser(), newChannel);
-                System.out.println(getSendUser() + " " + newChannel.toString());
-                InitMessage cmwarning = new InitMessage(getReceiveUser(), getSendUser(),"success");
-                newChannel.writeAndFlush(cmwarning);
-            } else {
-                InitMessage cmwarning = new InitMessage(getReceiveUser(), getSendUser(),"error_pw");
-                newChannel.writeAndFlush(cmwarning);
-            }
-
-
+            //已经被注册的话，提示客户端已存在
+            RegisterMessage cmwarning = new RegisterMessage("server", getSendUser(),"exist");
+            newChannel.writeAndFlush(cmwarning);
         } else {
-            InitMessage cmwarning = new InitMessage(getReceiveUser(), getSendUser(),"no_register");
+            UserChannels.addAccount(id, password);
+            Contacts contacts = new Contacts(id, "暂无", "这个人很懒，啥也没留下~");
+            UserChannels.userInfo.put(id, contacts);
+            UserChannels.userReuest.put(id, new ArrayList<>());
+            RegisterMessage cmwarning = new RegisterMessage("server", getSendUser(),"success");
             newChannel.writeAndFlush(cmwarning);
         }
-
     }
-
-
 }

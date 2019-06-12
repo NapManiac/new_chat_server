@@ -13,6 +13,7 @@ import io.netty.util.concurrent.GlobalEventExecutor;
 public class ChattingServeHandler extends ChannelInboundHandlerAdapter{
 	// 定义一个用于存放已连接服务器的channel组
     public static ChannelGroup channels=new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
+
     public static UserChannels uc = new UserChannels();
     // 存放未发送的消息
     public static MsgQueue msgQueue = new MsgQueue();
@@ -20,12 +21,7 @@ public class ChattingServeHandler extends ChannelInboundHandlerAdapter{
     @Override  // 第一步
     public void handlerAdded(ChannelHandlerContext ctx) {
         Channel newchannel=ctx.channel();
-        // 遍历channels组，通知其它channel对象，有新客户端加入连接
-        for(Channel ch:channels){
-            if(ch!=newchannel){ 
-                ch.writeAndFlush("欢迎新客户端："+newchannel.remoteAddress());
-            }
-        }
+        System.out.println("aaaaaaaaaaaa");
         channels.add(newchannel);
     }
  
@@ -34,12 +30,7 @@ public class ChattingServeHandler extends ChannelInboundHandlerAdapter{
     public void handlerRemoved(ChannelHandlerContext ctx) {
     	// 得到一个channel对象
         Channel newchannel =ctx.channel();
-        // 遍历channels组，通知其它channel对象，该channel对象已经退出连接
-        for(Channel ch:channels) {
-            if (ch != newchannel) {
-                ch.writeAndFlush(newchannel.remoteAddress() + "退出聊天室");
-            }
-        }
+
         // 将该channel对象移出组
         channels.remove(newchannel);
  

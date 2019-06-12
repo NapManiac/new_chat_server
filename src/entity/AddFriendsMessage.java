@@ -5,8 +5,8 @@ import io.netty.channel.Channel;
 import server.ChattingServeHandler;
 
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 
-import static server.ChattingServeHandler.msgQueue;
 
 public class AddFriendsMessage extends Packet {
 
@@ -20,9 +20,9 @@ public class AddFriendsMessage extends Packet {
         setPacketType(Util.MSG_ADDFRIENDS);
     }
 
-    public AddFriendsMessage(String sendUser, String receiveUser, String message){
+    public AddFriendsMessage(String sendUser, String receiveUser, String message) {
         super(Util.MSG_ADDFRIENDS, sendUser, receiveUser);
-        this.message=message;
+        this.message = message;
 
     }
 
@@ -45,38 +45,29 @@ public class AddFriendsMessage extends Packet {
 
     @Override
     public void process() {
-        super.process();
-        Channel newChannel =  getCtx().channel();
-        if (getReceiveUser().equals("")) { //如果没有接收者 则提示填
-            ChatMessage cmwarning = new ChatMessage("server", getSendUser(),"用户名为空！" + getSendUser());
+        UserChannels uc = ChattingServeHandler.uc;
 
-            newChannel.writeAndFlush(cmwarning);
+         if (getMessage().equals("agree")) {
+
+            uc.addUserFriend(getSendUser(), getReceiveUser());
+            uc.addUserFriend(getReceiveUser(), getSendUser());
+
+            System.out.println("agree " + getSendUser());
+            uc.getChannel(getReceiveUser()).writeAndFlush(this);
+
+        } else if (getMessage().equals("request")) { //如果是request请求
+            List<String> list = uc.userReuest.get(getReceiveUser());
+            list.add(getSendUser());
+
+            uc.getChannel(getReceiveUser()).writeAndFlush(this);
+
+            Contacts contacts = uc.userInfo.get(getSendUser());
+            uc.getChannel(getReceiveUser()).writeAndFlush(new UserInfoMessage(getSendUser(), getReceiveUser(), contacts.getName(), contacts.getMotto(), Util.INFO_REQUESTL_ADD));
+
         } else {
-            UserChannels uc = ChattingServeHandler.uc;
-            if (uc.getChannel(getReceiveUser())==null){ // 如果在线用户中不存在该用户，则向客户端回复不在线
-                ChatMessage cmwarning = new ChatMessage("server", getSendUser(),"该用户不在线！");
-
-                newChannel.writeAndFlush(cmwarning);
-                msgQueue.addMsg(getReceiveUser(), this);
-            } else if (getMessage().equals("agree")){
-                uc.addUserFriend(getSendUser(), getReceiveUser());
-                uc.addUserFriend(getReceiveUser(), getSendUser());
-                uc.getChannel(getReceiveUser()).writeAndFlush(this);
-
-            } else if (getMessage().equals("request")) { //如果是request请求
-                //如果好友不存在
-                if (!uc.searchUserFriend(getSendUser(), getReceiveUser())) {
-                    uc.getChannel(getReceiveUser()).writeAndFlush(this);
-
-                } else {
-                    //如果已经有了，则反馈已存在
-                    ChatMessage cmwarning = new ChatMessage("server", getSendUser(),"该好友已存在");
-                    newChannel.writeAndFlush(cmwarning);
-                }
-            } else {
-                uc.getChannel(getReceiveUser()).writeAndFlush(this);
-            }
-
+            uc.getChannel(getReceiveUser()).writeAndFlush(this);
         }
+
+
     }
 }

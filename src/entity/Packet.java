@@ -59,6 +59,8 @@ public class Packet {
     }
 
     public void decodeInit(byte[] buffer) throws UnsupportedEncodingException {
+        System.out.println("decode!!!!!!!!");
+
         int start_index = 4;//开始解码发送者的位置
         int lenSendUser = Util.bytes2int(buffer, start_index);//解码发送者和接收者的长度
         int lenReceiveUser = Util.bytes2int(buffer, start_index + 4);
@@ -67,6 +69,8 @@ public class Packet {
         receiveUser = new String(buffer, offeset + lenSendUser, lenReceiveUser, "UTF-8");
         //方便子类解码 记录消息主体的下标
         startMsgPos = offeset + lenSendUser + lenReceiveUser;
+
+        System.out.println("decode " + receiveUser);
     }
 
     public byte[] encodeInit() throws UnsupportedEncodingException {

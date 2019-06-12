@@ -11,7 +11,6 @@ import io.netty.handler.codec.LengthFieldPrepender;
 /**
  * 完成channel中pipeline的一些初始化内容，初始化完成后，将自身移除
  * 这个类相当于用来说明服务器启动过程中，需要经过哪些过程，相当于流水线上的几个部分
- * @author zhuhaipeng
  *
  */
 public class ChattingServerInitializer extends ChannelInitializer<SocketChannel> {
