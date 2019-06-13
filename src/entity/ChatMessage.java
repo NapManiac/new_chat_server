@@ -55,8 +55,7 @@ public class ChatMessage extends Packet{
             }
         }else{//发给指定用户
 
-            if(uc.getChannel(getReceiveUser())==null){ // 如果在线用户中不存在该用户，则向客户端回复不在线
-
+            if(uc.getChannel(getReceiveUser())==null){
                 msgQueue.addMsg(getReceiveUser(), this);
             } else {
                 uc.getChannel(getReceiveUser()).writeAndFlush(this);

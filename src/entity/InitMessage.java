@@ -5,8 +5,11 @@ import Coder.Util;
 import server.ChattingServeHandler;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Map;
 
 import io.netty.channel.Channel;
+
+import static server.ChattingServeHandler.msgQueue;
 
 public class InitMessage extends Packet {
 
@@ -74,6 +77,8 @@ public class InitMessage extends Packet {
                 System.out.println(getSendUser() + " " + newChannel.toString());
                 InitMessage cmwarning = new InitMessage(getReceiveUser(), getSendUser(),"success");
                 newChannel.writeAndFlush(cmwarning);
+
+
             } else {
                 InitMessage cmwarning = new InitMessage(getReceiveUser(), getSendUser(),"error_pw");
                 newChannel.writeAndFlush(cmwarning);

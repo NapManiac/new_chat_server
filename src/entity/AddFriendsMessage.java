@@ -7,6 +7,8 @@ import server.ChattingServeHandler;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 
+import static server.ChattingServeHandler.msgQueue;
+
 
 public class AddFriendsMessage extends Packet {
 
@@ -47,26 +49,35 @@ public class AddFriendsMessage extends Packet {
     public void process() {
         UserChannels uc = ChattingServeHandler.uc;
 
-         if (getMessage().equals("agree")) {
 
-            uc.addUserFriend(getSendUser(), getReceiveUser());
-            uc.addUserFriend(getReceiveUser(), getSendUser());
+            if (getMessage().equals("agree")) {
 
-            System.out.println("agree " + getSendUser());
-            uc.getChannel(getReceiveUser()).writeAndFlush(this);
+                uc.addUserFriend(getSendUser(), getReceiveUser());
+                uc.addUserFriend(getReceiveUser(), getSendUser());
 
-        } else if (getMessage().equals("request")) { //如果是request请求
-            List<String> list = uc.userReuest.get(getReceiveUser());
-            list.add(getSendUser());
+                System.out.println("agree " + getSendUser());
+                if(uc.getChannel(getReceiveUser())==null){
+                    msgQueue.addMsg(getReceiveUser(), this);
+                } else {
+                    uc.getChannel(getReceiveUser()).writeAndFlush(this);
+                }
 
-            uc.getChannel(getReceiveUser()).writeAndFlush(this);
+            } else if (getMessage().equals("request")) { //如果是request请求
+                List<String> list = uc.userReuest.get(getReceiveUser());
+                list.add(getSendUser());
 
-            Contacts contacts = uc.userInfo.get(getSendUser());
-            uc.getChannel(getReceiveUser()).writeAndFlush(new UserInfoMessage(getSendUser(), getReceiveUser(), contacts.getName(), contacts.getMotto(), Util.INFO_REQUESTL_ADD));
 
-        } else {
-            uc.getChannel(getReceiveUser()).writeAndFlush(this);
-        }
+                Contacts contacts = uc.userInfo.get(getSendUser());
+                if(uc.getChannel(getReceiveUser())==null){
+                    msgQueue.addMsg(getReceiveUser(), this);
+                } else {
+                    uc.getChannel(getReceiveUser()).writeAndFlush(this);
+                    uc.getChannel(getReceiveUser()).writeAndFlush(new UserInfoMessage(getSendUser(), getReceiveUser(), contacts.getName(), contacts.getMotto(), Util.INFO_REQUESTL_ADD));
+                }
+
+            } else {
+                uc.getChannel(getReceiveUser()).writeAndFlush(this);
+            }
 
 
     }

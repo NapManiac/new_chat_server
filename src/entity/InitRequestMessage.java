@@ -6,6 +6,8 @@ import io.netty.channel.Channel;
 
 import java.io.UnsupportedEncodingException;
 
+import static server.ChattingServeHandler.msgQueue;
+
 public class InitRequestMessage extends Packet {
 
 
@@ -41,5 +43,14 @@ public class InitRequestMessage extends Packet {
                 newChannel.writeAndFlush(userInfoMessage);
             }
         }
+
+        if (msgQueue.getChatMessage(getSendUser()) != null) {
+            System.out.println("收到离线加好友消息并处理");
+            for (Packet packet : msgQueue.getChatMessage(getSendUser())) {
+                newChannel.writeAndFlush(packet);
+            }
+                msgQueue.removeMsgQueue(getSendUser());
+        }
+
     }
 }

@@ -21,7 +21,6 @@ public class ChattingServeHandler extends ChannelInboundHandlerAdapter{
     @Override  // 第一步
     public void handlerAdded(ChannelHandlerContext ctx) {
         Channel newchannel=ctx.channel();
-        System.out.println("aaaaaaaaaaaa");
         channels.add(newchannel);
     }
  
@@ -42,6 +41,8 @@ public class ChattingServeHandler extends ChannelInboundHandlerAdapter{
         packet.setCtx(ctx);
         System.out.println("type:" + packet.getClass());
         TaskQueue.INSTANCE.push(packet);
+
+
 
     }
     public static boolean searchUserExit(String username) {
