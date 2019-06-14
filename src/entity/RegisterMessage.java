@@ -14,6 +14,10 @@ public class RegisterMessage extends Packet{
 
     private String password;
 
+    private String name;
+
+    private String motto;
+
     public String getMessage() {
         return message;
     }
@@ -45,12 +49,18 @@ public class RegisterMessage extends Packet{
 
         int lenId = Util.bytes2int(buffer, getStartMsgPos());//解码id长度
         int lenPassword = Util.bytes2int(buffer, getStartMsgPos() + 4);//解码password长度
+        int lenName = Util.bytes2int(buffer, getStartMsgPos() + 8);
+        int lenMotto = Util.bytes2int(buffer, getStartMsgPos() + 12);
 
-        int star_index = getStartMsgPos() + 8;
+        int star_index = getStartMsgPos() + 16;
 
         id = new String(buffer, star_index, lenId, "UTF-8");
 
         password = new String(buffer, star_index + lenId, lenPassword, "UTF-8");
+
+        name = new String(buffer, star_index + lenId + lenPassword, lenName, "UTF-8");
+
+        motto = new String(buffer, star_index + lenId + lenPassword + lenName, lenMotto, "UTF-8");
     }
     @Override
     public void process() {
@@ -63,7 +73,14 @@ public class RegisterMessage extends Packet{
             newChannel.writeAndFlush(cmwarning);
         } else {
             UserChannels.addAccount(id, password);
-            Contacts contacts = new Contacts(id, "暂无", "这个人很懒，啥也没留下~");
+            if (name.equals("")) {
+                name = "未取名";
+            }
+
+            if (motto.equals("")) {
+                motto = "这个人很懒，啥也没留下~";
+            }
+            Contacts contacts = new Contacts(id, name, motto);
             UserChannels.userInfo.put(id, contacts);
             UserChannels.userReuest.put(id, new ArrayList<>());
             RegisterMessage cmwarning = new RegisterMessage("server", getSendUser(),"success");

@@ -3,12 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="00e6d30b-bba9-458b-9eec-f327d3b949cc" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/entity/AddFriendsMessage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/entity/AddFriendsMessage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/entity/ChatMessage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/entity/ChatMessage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/entity/InitMessage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/entity/InitMessage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/entity/InitRequestMessage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/entity/InitRequestMessage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/entity/MsgQueue.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/entity/MsgQueue.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/server/ChattingServeHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/server/ChattingServeHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/entity/RegisterMessage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/entity/RegisterMessage.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/classes/" />
     <ignored path="$PROJECT_DIR$/bin/" />
@@ -22,7 +17,20 @@
     <option name="isMigrated" value="true" />
   </component>
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="375" />
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="375">
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/entity/RegisterMessage.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="134">
+              <caret line="81" column="13" lean-forward="true" selection-start-line="81" selection-start-column="13" selection-end-line="81" selection-end-column="13" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -67,7 +75,6 @@
         <option value="$PROJECT_DIR$/src/entity/PacketFactory.java" />
         <option value="$PROJECT_DIR$/src/Coder/Util.java" />
         <option value="$PROJECT_DIR$/src/server/WorkThread.java" />
-        <option value="$PROJECT_DIR$/src/entity/RegisterMessage.java" />
         <option value="$PROJECT_DIR$/src/entity/UserChannels.java" />
         <option value="$PROJECT_DIR$/src/server/StartServer.java" />
         <option value="$PROJECT_DIR$/src/server/ChattingServeHandler.java" />
@@ -76,6 +83,7 @@
         <option value="$PROJECT_DIR$/src/entity/MsgQueue.java" />
         <option value="$PROJECT_DIR$/src/entity/InitRequestMessage.java" />
         <option value="$PROJECT_DIR$/src/entity/AddFriendsMessage.java" />
+        <option value="$PROJECT_DIR$/src/entity/RegisterMessage.java" />
       </list>
     </option>
   </component>
@@ -108,13 +116,13 @@
     <property name="settings.editor.selected.configurable" value="vcs.Git" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="D:\Software\IntelliJ IDEA 2019.1\IdeaProjects\new_chat_server\src" />
-    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="D:\Software\IntelliJ IDEA 2019.1\IdeaProjects\new_chat_server\src\entity" />
       <recent name="D:\Software\IntelliJ IDEA 2019.1\IdeaProjects\new_chat_server\src\Util" />
       <recent name="D:\Software\IntelliJ IDEA 2019.1\IdeaProjects\new_chat_server\libs" />
+      <recent name="D:\Software\IntelliJ IDEA 2019.1\IdeaProjects\new_chat_server\src" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\Software\IntelliJ IDEA 2019.1\IdeaProjects\new_chat_server\src" />
     </key>
   </component>
@@ -202,7 +210,7 @@
       <workItem from="1559819699824" duration="76256000" />
       <workItem from="1560211717439" duration="22378000" />
       <workItem from="1560350291656" duration="2305000" />
-      <workItem from="1560383607519" duration="7495000" />
+      <workItem from="1560383607519" duration="10603000" />
     </task>
     <task id="LOCAL-00001" summary="符凌云">
       <created>1558338100582</created>
@@ -239,11 +247,18 @@
       <option name="project" value="LOCAL" />
       <updated>1560355586573</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="离线接收消息">
+      <created>1560427386746</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1560427386746</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="216006000" />
+    <option name="totallyTimeSpent" value="219114000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
@@ -257,7 +272,7 @@
       <window_info id="Favorites" order="6" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.43941605" />
-      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.49865046" visible="true" weight="0.27192983" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.49865046" visible="true" weight="0.3640351" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.3991228" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -287,7 +302,8 @@
     <MESSAGE value="工厂模式" />
     <MESSAGE value="增加任务队列，实现线程池处理任务队列，高并发" />
     <MESSAGE value="除了云消息，基本弄完了" />
-    <option name="LAST_COMMIT_MESSAGE" value="除了云消息，基本弄完了" />
+    <MESSAGE value="离线接收消息" />
+    <option name="LAST_COMMIT_MESSAGE" value="离线接收消息" />
   </component>
   <component name="editorHistoryManager">
     <entry file="jar://$PROJECT_DIR$/libs/netty-all-4.1.36.Final-sources.jar!/io/netty/channel/Channel.java">
@@ -447,16 +463,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/entity/RegisterMessage.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="341">
-          <caret line="64" column="39" selection-start-line="64" selection-start-column="39" selection-end-line="64" selection-end-column="39" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/Coder/test.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="399">
@@ -575,6 +581,16 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="260">
           <caret line="73" column="32" selection-start-line="73" selection-start-column="32" selection-end-line="73" selection-end-column="32" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/entity/RegisterMessage.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="134">
+          <caret line="81" column="13" lean-forward="true" selection-start-line="81" selection-start-column="13" selection-end-line="81" selection-end-column="13" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
